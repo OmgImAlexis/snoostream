@@ -9,9 +9,10 @@
   ],
   "scripts": {
     "prepare": "npm run build",
-    "build": "tsup ./src/index.ts --dts",
+    "build": "tsup ./src/index.ts --dts-resolve",
     "test": "ts-mocha ./test/**/*.spec.ts --timeout 10000",
-    "test:coverage": "nyc --reporter=html --reporter=text --reporter=text-summary npm test"
+    "test:coverage": "nyc --reporter=html --reporter=text --reporter=text-summary npm test",
+    "type:coverage": "typescript-coverage-report"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     "nyc": "^15.1.0",
     "ts-mocha": "^8.0.0",
     "tsup": "^4.12.5",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "typescript-coverage-report": "^0.6.0"
   }
 }

@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { Submission } from 'snoowrap';
 import { SnooStream } from '../src';
 
 /**
@@ -34,7 +35,7 @@ describe('SnooStream', function () {
       const postsMatched: any[] = [];
       const snooWrap = SnoowrapMock();
       const commentStream = new SnooStream(snooWrap).commentStream();
-      commentStream.on('post', d => postsMatched.push(d));
+      commentStream.on('comment', d => postsMatched.push(d));
 
       for (let i = 1; i <= 5; ++i) {
         snooWrap.addPost('old', timeInSecs(Date.now() - (i * 1000)));
@@ -50,7 +51,7 @@ describe('SnooStream', function () {
       const postsMatched: any[] = [];
       const snooWrap = SnoowrapMock();
       const commentStream = new SnooStream(snooWrap).commentStream('', { rate: 10 });
-      commentStream.on('post', d => postsMatched.push(d));
+      commentStream.on('comment', d => postsMatched.push(d));
 
       for (let i = 0; i < 5; ++i) {
         snooWrap.addPost('' + i);
@@ -59,7 +60,7 @@ describe('SnooStream', function () {
       setTimeout(() => {
         const dupCheck = [];
         dupCheck[postsMatched.length - 1] = '';
-        dupCheck.fill(0);
+        dupCheck.fill('');
 
         for (let i = 0; i < postsMatched.length; ++i) {
           (dupCheck[postsMatched[i].body] as unknown as number)++;
@@ -72,7 +73,7 @@ describe('SnooStream', function () {
       const drift = 1;
       const snooWrap = SnoowrapMock(drift);
       const commentStream = new SnooStream(snooWrap, drift).commentStream('', { rate: 10 });
-      commentStream.on('post', () => done());
+      commentStream.on('comment', () => done());
 
       snooWrap.addPost('will only be emitted if drift is accounted for');
     });
@@ -81,7 +82,7 @@ describe('SnooStream', function () {
       const regex = /abc/;
       const snooWrap = SnoowrapMock();
       const commentStream = new SnooStream(snooWrap).commentStream('', { regex });
-      commentStream.on('post', d => postsMatched.push(d));
+      commentStream.on('comment', d => postsMatched.push(d));
 
       snooWrap.addPost('asdf asdf sadf abc asdf');
       snooWrap.addPost('qwqwe asdf ewqiopadf');
@@ -98,7 +99,7 @@ describe('SnooStream', function () {
       const postsMatched: any[] = [];
       const snooWrap = SnoowrapMock();
       const submissionStream = new SnooStream(snooWrap).submissionStream();
-      submissionStream.on('post', d => postsMatched.push(d));
+      submissionStream.on('submission', d => postsMatched.push(d));
 
       for (let i = 1; i <= 5; ++i) {
         snooWrap.addPost('old', timeInSecs(Date.now() - (i * 1000)));
@@ -114,7 +115,7 @@ describe('SnooStream', function () {
       const postsMatched: any[] = [];
       const snooWrap = SnoowrapMock();
       const submissionStream = new SnooStream(snooWrap).submissionStream('', { rate: 10 });
-      submissionStream.on('post', d => postsMatched.push(d));
+      submissionStream.on('submission', d => postsMatched.push(d));
 
       for (let i = 0; i < 5; ++i) {
         snooWrap.addPost('' + i);
@@ -123,7 +124,7 @@ describe('SnooStream', function () {
       setTimeout(() => {
         const dupCheck = [];
         dupCheck[postsMatched.length - 1] = '';
-        dupCheck.fill(0);
+        dupCheck.fill('');
 
         for (let i = 0; i < postsMatched.length; ++i) {
           (dupCheck[postsMatched[i].body] as unknown as number)++;
@@ -136,7 +137,7 @@ describe('SnooStream', function () {
       const drift = 1;
       const snooWrap = SnoowrapMock(drift);
       const submissionStream = new SnooStream(snooWrap, drift).submissionStream('', { rate: 10 });
-      submissionStream.on('post', () => done());
+      submissionStream.on('submission', () => done());
 
       snooWrap.addPost('will only be emitted if drift is accounted for');
     });
@@ -145,7 +146,7 @@ describe('SnooStream', function () {
       const regex = /abc/;
       const snooWrap = SnoowrapMock();
       const submissionStream = new SnooStream(snooWrap).submissionStream('', { regex });
-      submissionStream.on('post', d => postsMatched.push(d));
+      submissionStream.on('submission', d => postsMatched.push(d));
 
       snooWrap.addPost('asdf asdf sadf abc asdf');
       snooWrap.addPost('qwqwe asdf ewqiopadf');
