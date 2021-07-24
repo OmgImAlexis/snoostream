@@ -69,6 +69,10 @@ export class SnooStream {
   private parseStream(pollFn: PollFunction<(Comment)[]>, type: 'comment', subreddit: string, opts?: Omit<PollifyOptions, 'mode'>): Pollify<Comment[], CommentEvent<Comment>>;
   private parseStream(pollFn: PollFunction<(Submission)[]>, type: 'submission', subreddit: string, opts?: Omit<PollifyOptions, 'mode'>): Pollify<Submission[], SubmissionEvent<Submission>>;
   private parseStream(pollFn: PollFunction<(Comment | Submission)[]>, type: 'comment' | 'submission', subreddit = 'all', opts?: Omit<PollifyOptions, 'mode'>) {
+    // Validation
+    if (typeof subreddit !== 'string') throw new TypeError(`"subreddit" value of "${subreddit}" must be a string, not ${typeof subreddit}.`);
+    if (subreddit.length < 2) throw new TypeError(`"subreddit" must be at least 2 characters, "${subreddit}" is invalid`);
+
     const cacheObject = { cache: [] };
     const poll = pollify<(Comment | Submission)[], CommentEvent<(Comment | Submission)[]> | SubmissionEvent<(Comment | Submission)>>({ rate: opts?.rate || 1000, mode: 'promise' }, pollFn, subreddit, opts);
     poll.on('data', data => {
