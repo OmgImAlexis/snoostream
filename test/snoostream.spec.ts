@@ -7,20 +7,21 @@ import { SnooStream } from '../src';
  * @param drift The number of seconds Reddit is behind system time by.
  */
 function SnoowrapMock(drift = 0) {
-  const posts: Partial<Submission | Comment>[] = [];
+  const submissions: Partial<Submission>[] = [];
+  const comments: Partial<Comment>[] = [];
   return {
     userAgent: 'SnoowrapMock',
-    get posts() {
-      return posts;
+    addSubmission(selftext: string, created_utc = timeInSecs() - drift) {
+      submissions.push({ selftext, created_utc });
     },
-    addPost(body: string, created_utc = timeInSecs() - drift) {
-      this.posts.push({ selftext: body, body, created_utc });
+    addComment(body: string, created_utc = timeInSecs() - drift) {
+      comments.push({ body, created_utc });
     },
     getNew() {
-      return Promise.resolve(this.posts);
+      return Promise.resolve(submissions);
     },
     getNewComments() {
-      return Promise.resolve(this.posts);
+      return Promise.resolve(comments);
     }
   };
 }
@@ -38,8 +39,8 @@ describe('SnooStream', function () {
       commentStream.on('comment', d => postsMatched.push(d));
 
       for (let i = 1; i <= 5; ++i) {
-        snooWrap.addPost('old', timeInSecs(Date.now() - (i * 1000)));
-        snooWrap.addPost('new', timeInSecs(Date.now() + (i * 1000)));
+        snooWrap.addComment('old', timeInSecs(Date.now() - (i * 1000)));
+        snooWrap.addComment('new', timeInSecs(Date.now() + (i * 1000)));
       }
 
       setTimeout(() => {
@@ -54,7 +55,7 @@ describe('SnooStream', function () {
       commentStream.on('comment', d => postsMatched.push(d));
 
       for (let i = 0; i < 5; ++i) {
-        snooWrap.addPost(`${i}`);
+        snooWrap.addComment(`${i}`);
       }
 
       setTimeout(() => {
@@ -74,8 +75,7 @@ describe('SnooStream', function () {
       const snooWrap = SnoowrapMock(drift);
       const commentStream = new SnooStream(snooWrap, drift).commentStream('all', { rate: 10 });
       commentStream.on('comment', () => done());
-
-      snooWrap.addPost('will only be emitted if drift is accounted for');
+      snooWrap.addComment('will only be emitted if drift is accounted for');
     });
     it('limits post events to posts that match regex', function (done) {
       const postsMatched: Comment[] = [];
@@ -84,8 +84,8 @@ describe('SnooStream', function () {
       const commentStream = new SnooStream(snooWrap).commentStream('all', { regex });
       commentStream.on('comment', d => postsMatched.push(d));
 
-      snooWrap.addPost('asdf asdf sadf abc asdf');
-      snooWrap.addPost('qwqwe asdf ewqiopadf');
+      snooWrap.addComment('asdf asdf sadf abc asdf');
+      snooWrap.addComment('qwqwe asdf ewqiopadf');
 
       setTimeout(() => {
         expect(postsMatched.every(p => !!p.body.match(regex))).to.be.true;
@@ -102,8 +102,8 @@ describe('SnooStream', function () {
       submissionStream.on('submission', d => postsMatched.push(d));
 
       for (let i = 1; i <= 5; ++i) {
-        snooWrap.addPost('old', timeInSecs(Date.now() - (i * 1000)));
-        snooWrap.addPost('new', timeInSecs(Date.now() + (i * 1000)));
+        snooWrap.addSubmission('old', timeInSecs(Date.now() - (i * 1000)));
+        snooWrap.addSubmission('new', timeInSecs(Date.now() + (i * 1000)));
       }
 
       setTimeout(() => {
@@ -118,7 +118,7 @@ describe('SnooStream', function () {
       submissionStream.on('submission', d => postsMatched.push(d));
 
       for (let i = 0; i < 5; ++i) {
-        snooWrap.addPost(`${i}`);
+        snooWrap.addSubmission(`${i}`);
       }
 
       setTimeout(() => {
@@ -139,7 +139,7 @@ describe('SnooStream', function () {
       const submissionStream = new SnooStream(snooWrap, drift).submissionStream('all', { rate: 10 });
       submissionStream.on('submission', () => done());
 
-      snooWrap.addPost('will only be emitted if drift is accounted for');
+      snooWrap.addSubmission('will only be emitted if drift is accounted for');
     });
     it('limits post events to posts that match regex', function (done) {
       const postsMatched: Submission[] = [];
@@ -148,8 +148,8 @@ describe('SnooStream', function () {
       const submissionStream = new SnooStream(snooWrap).submissionStream('all', { regex });
       submissionStream.on('submission', d => postsMatched.push(d));
 
-      snooWrap.addPost('asdf asdf sadf abc asdf');
-      snooWrap.addPost('qwqwe asdf ewqiopadf');
+      snooWrap.addSubmission('asdf asdf sadf abc asdf');
+      snooWrap.addSubmission('qwqwe asdf ewqiopadf');
 
       setTimeout(() => {
         expect(postsMatched.every(p => !!p.selftext.match(regex))).to.be.true;
