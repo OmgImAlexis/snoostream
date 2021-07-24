@@ -6,7 +6,9 @@ import EventEmitter from 'events';
  * Check if an object is an instance of Snoowrap.
  */
 function isSnoowrap(obj: Record<string, any>): obj is Snoowrap {
-  return obj instanceof Snoowrap;
+  const isSnoowrapInstance = obj instanceof Snoowrap;
+  const isSnoowrapMock = typeof (obj as Snoowrap).getNew === 'function' && typeof (obj as Snoowrap).getNewComments === 'function';
+  return isSnoowrapInstance || isSnoowrapMock;
 }
 
 interface CommentEvent<Data> {

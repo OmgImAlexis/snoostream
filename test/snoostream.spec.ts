@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { Submission } from 'snoowrap';
 import { SnooStream } from '../src';
 
 /**
@@ -13,13 +12,13 @@ function SnoowrapMock (drift = 0) {
     get posts() {
       return posts;
     },
-    addPost (body: any, created_utc = timeInSecs() - drift) {
-      this.posts.push({ body, created_utc });
+    addPost(body: any, created_utc = timeInSecs() - drift) {
+      this.posts.push({ selftext: body, body, created_utc });
     },
-    getNew () {
+    getNew() {
       return Promise.resolve(this.posts);
     },
-    getNewComments () {
+    getNewComments() {
       return Promise.resolve(this.posts);
     }
   };
