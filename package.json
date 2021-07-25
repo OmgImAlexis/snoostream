@@ -35,16 +35,22 @@
     "url": "https://github.com/lobabob/snoostream/issues"
   },
   "homepage": "https://github.com/lobabob/snoostream#readme",
-  "dependencies": {},
+  "dependencies": {
+    "form-data": "^4.0.0"
+  },
   "devDependencies": {
+    "@types/caseless": "^0.12.2",
     "@types/chai": "^4.2.21",
+    "@types/form-data": "^2.5.0",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.4.1",
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0",
+    "@types/request": "^2.48.6",
+    "chai": "^4.3.4",
+    "mocha": "^9.0.2",
     "nyc": "^15.1.0",
     "pollify": "github:omgimalexis/pollify#master",
-    "snoowrap": "^1.23.0",
+    "rollup-plugin-dts": "^3.0.2",
+    "snoowrap": "github:omgimalexis/snoowrap#fix-types",
     "ts-mocha": "^8.0.0",
     "tsup": "^4.12.5",
     "typescript": "^4.3.5",

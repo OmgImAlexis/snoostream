@@ -1,4 +1,4 @@
-import Snoowrap, { SnoowrapOptions, Comment, Submission } from 'snoowrap';
+import { Snoowrap, Submission, Comment, SnoowrapOptions } from 'snoowrap';
 import pollify, { PollFunction, Pollify, PollifyOptions } from 'pollify';
 import EventEmitter from 'events';
 
